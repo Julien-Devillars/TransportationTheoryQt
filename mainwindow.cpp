@@ -88,6 +88,10 @@ void MainWindow::open()
     while (dialog.exec() == QDialog::Accepted && !loadFile(dialog.selectedFiles().first())) {}
 }
 
+void MainWindow::transportation()
+{
+    qDebug() << "Test";
+}
 
 void MainWindow::createActions()
 {
@@ -97,6 +101,7 @@ void MainWindow::createActions()
     openAct->setShortcut(QKeySequence::Open); // Enable Ctrl + O shortcut
 
     fileMenu->addSeparator();
+    menuBar()->addAction(tr("&Transport"), this, &MainWindow::transportation);
 
     QAction *exitAct = fileMenu->addAction(tr("E&xit"), this, &QWidget::close);
     exitAct->setShortcut(tr("Ctrl+Q"));

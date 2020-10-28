@@ -34,6 +34,7 @@ public:
 
 private slots:
     void open();
+    void transportation();
 
 private:
     void createActions();
