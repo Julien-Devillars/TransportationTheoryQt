@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , imageLabel1(new QLabel)
     , imageLabel2(new QLabel)
-    , scrollArea(new QScrollArea)
 {
     setWindowTitle("Transportation Theory");
 
@@ -22,10 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
     imageLabel2->setBackgroundRole(QPalette::Base);
     imageLabel2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imageLabel2->setScaledContents(true);
-
-    //scrollArea->setBackgroundRole(QPalette::Dark);
-    //scrollArea->setWidget(imageLabel);
-    //scrollArea->setVisible(false);
 
     mainWidget = new QWidget(this);
     Hlayout = new QHBoxLayout(this);
@@ -53,7 +48,6 @@ void MainWindow::setImage(const QImage &newImage)
         imageLabel1->setPixmap(QPixmap::fromImage(image1));
 
 
-        scrollArea->setVisible(true);
         imageLabel1->adjustSize();
     }
     else if(image2.isNull())
@@ -64,7 +58,6 @@ void MainWindow::setImage(const QImage &newImage)
             image2.convertToColorSpace(QColorSpace::SRgb);
         imageLabel2->setPixmap(QPixmap::fromImage(image2));
 
-        scrollArea->setVisible(true);
         imageLabel2->adjustSize();
     }
 }

@@ -44,7 +44,6 @@ private:
     QImage image2;
     QLabel *imageLabel1;
     QLabel *imageLabel2;
-    QScrollArea *scrollArea;
     double scaleFactor = 1;
 
     QHBoxLayout* Hlayout;
