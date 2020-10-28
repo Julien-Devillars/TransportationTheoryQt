@@ -40,11 +40,15 @@ private:
     void updateActions();
     void setImage(const QImage &newImage);
 
-    QImage image;
-    QLabel *imageLabel;
+    QImage image1;
+    QImage image2;
+    QLabel *imageLabel1;
+    QLabel *imageLabel2;
     QScrollArea *scrollArea;
     double scaleFactor = 1;
 
+    QHBoxLayout* Hlayout;
+    QWidget* mainWidget;
 
     QAction *printAct;
     QAction *fitToWindowAct;

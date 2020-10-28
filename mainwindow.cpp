@@ -7,19 +7,34 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , imageLabel(new QLabel)
+    , imageLabel1(new QLabel)
+    , imageLabel2(new QLabel)
     , scrollArea(new QScrollArea)
 {
     setWindowTitle("Transportation Theory");
 
-    imageLabel->setBackgroundRole(QPalette::Base);
-    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    imageLabel->setScaledContents(true);
+    Hlayout = new QHBoxLayout(this);
 
-    scrollArea->setBackgroundRole(QPalette::Dark);
-    scrollArea->setWidget(imageLabel);
-    scrollArea->setVisible(false);
-    setCentralWidget(scrollArea);
+    imageLabel1->setBackgroundRole(QPalette::Base);
+    imageLabel1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel1->setScaledContents(true);
+
+    imageLabel2->setBackgroundRole(QPalette::Base);
+    imageLabel2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel2->setScaledContents(true);
+
+    //scrollArea->setBackgroundRole(QPalette::Dark);
+    //scrollArea->setWidget(imageLabel);
+    //scrollArea->setVisible(false);
+
+    mainWidget = new QWidget(this);
+    Hlayout = new QHBoxLayout(this);
+    mainWidget->setLayout(Hlayout);
+
+    Hlayout->addWidget(imageLabel1);
+    Hlayout->addWidget(imageLabel2);
+
+    setCentralWidget(mainWidget);
 
     createActions();
 
@@ -29,17 +44,29 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::setImage(const QImage &newImage)
 {
-    image = newImage;
+    if(image1.isNull())
+    {
+        image1 = newImage;
 
-    if (image.colorSpace().isValid())
-        image.convertToColorSpace(QColorSpace::SRgb);
-    imageLabel->setPixmap(QPixmap::fromImage(image));
+        if (image1.colorSpace().isValid())
+            image1.convertToColorSpace(QColorSpace::SRgb);
+        imageLabel1->setPixmap(QPixmap::fromImage(image1));
 
-    scaleFactor = 1.0;
 
-    scrollArea->setVisible(true);
+        scrollArea->setVisible(true);
+        imageLabel1->adjustSize();
+    }
+    else if(image2.isNull())
+    {
+        image2 = newImage;
 
-    imageLabel->adjustSize();
+        if (image2.colorSpace().isValid())
+            image2.convertToColorSpace(QColorSpace::SRgb);
+        imageLabel2->setPixmap(QPixmap::fromImage(image2));
+
+        scrollArea->setVisible(true);
+        imageLabel2->adjustSize();
+    }
 }
 
 bool MainWindow::loadFile(const QString &fileName)
@@ -58,9 +85,6 @@ bool MainWindow::loadFile(const QString &fileName)
 
     setWindowFilePath(fileName);
 
-    const QString message = tr("Opened \"%1\", %2x%3, Depth: %4")
-        .arg(QDir::toNativeSeparators(fileName)).arg(image.width()).arg(image.height()).arg(image.depth());
-    statusBar()->showMessage(message);
     return true;
 }
 
