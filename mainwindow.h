@@ -5,10 +5,17 @@
 #include <QGraphicsScene>
 #include <QVBoxLayout>
 #include <QImage>
+#include <QColorSpace>
 #include <QLabel>
 #include <QDebug>
 #include <QScrollBar>
 #include <QScrollArea>
+#include <QImageReader>
+#include <QMessageBox>
+#include <QStandardPaths>
+#include <QImageWriter>
+#include <QGuiApplication>
+#include <QScreen>
 
 QT_BEGIN_NAMESPACE
 
@@ -23,16 +30,24 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    bool loadFile(const QString &fileName);
 
 private slots:
     void open();
 
 private:
     void createActions();
+    void updateActions();
+    void setImage(const QImage &newImage);
 
     QImage image;
     QLabel *imageLabel;
     QScrollArea *scrollArea;
+    double scaleFactor = 1;
+
+
+    QAction *printAct;
+    QAction *fitToWindowAct;
 
 };
 #endif // MAINWINDOW_H
