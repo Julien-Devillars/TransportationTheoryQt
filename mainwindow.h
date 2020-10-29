@@ -16,7 +16,9 @@
 #include <QImageWriter>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QRandomGenerator>
 
+#include "point.h"
 QT_BEGIN_NAMESPACE
 
 

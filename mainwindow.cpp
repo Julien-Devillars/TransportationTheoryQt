@@ -90,8 +90,86 @@ void MainWindow::open()
 
 void MainWindow::transportation()
 {
-    qDebug() << "Test";
 
+    uchar* bits1 = image1.bits();
+    uchar* bits2 = image2.bits();
+
+    QList<Point> im1;
+    QList<Point> im2;
+
+    std::default_random_engine generator;
+    std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+
+    if(image1.width() * image1.height() != image2.width() * image2.height())
+        return;
+
+    for(int i = 0 ; i < image1.width() * image1.height() * 4; i +=4)
+    {
+        im1.push_back(Point(bits1[i], bits1[i+1], bits1[i+2]));
+        im2.push_back(Point(bits2[i], bits2[i+1], bits2[i+2]));
+    }
+
+
+    QList<QPair<double, int>> scalarIdx1;
+    QList<QPair<double, int>> scalarIdx2;
+
+    const int ITERATIONS = 20;
+
+    for(int k = 0 ; k < ITERATIONS ; ++k)
+    {
+        qDebug() << "K = " << k << "\n";
+
+        double r1 = distribution(generator);
+        double r2 = distribution(generator);
+        double r3 = distribution(generator);
+        double r4 = distribution(generator);
+
+        double x = sqrt(-2 * log(r1) * cos(2 * M_PI * r2));
+        double y = sqrt(-2 * log(r1) * sin(2 * M_PI * r2));
+        double z = sqrt(-2 * log(r3) * cos(2 * M_PI * r4));
+
+        Point A(x,y,z);
+        A.normalize(1.0);
+
+        scalarIdx1.clear();
+        scalarIdx2.clear();
+
+        for(int i = 0 ; i < image1.width() * image1.height() ; ++i)
+        {
+            scalarIdx1.push_back(QPair<double, int>(A.dot(im1[i]), i));
+            scalarIdx2.push_back(QPair<double, int>(A.dot(im2[i]), i));
+        }
+
+        std::sort(scalarIdx1.begin(), scalarIdx1.end());
+        std::sort(scalarIdx2.begin(), scalarIdx2.end());
+
+        for(int i = 0 ; i < scalarIdx1.size() ; ++i)
+        {
+            double diff = scalarIdx1[i].first - scalarIdx2[i].first;
+            Point B = A;
+            B.normalize(diff);
+
+            Point p = Point(im1[scalarIdx1[i].second]);
+            im1[scalarIdx1[i].second].x = p.x + B.x;
+            im1[scalarIdx1[i].second].y = p.y + B.y;
+            im1[scalarIdx1[i].second].z = p.z + B.z;
+        }
+    }
+
+    uchar* bits3 = new uchar(image1.width() * image2.height() * 4);
+
+    for(int i = 0 ; i < image1.width() * image2.height() * 4 ; i += 4)
+    {
+        bits3[i + 0] = std::max(std::min(255.0, im1[i / 3].x), 0.0);
+        bits3[i + 1] = std::max(std::min(255.0, im1[i / 3].x), 0.0);
+        bits3[i + 2] = std::max(std::min(255.0, im1[i / 3].x), 0.0);
+        bits3[i + 3] = 255.0;
+    }
+
+    QImage image3(bits3, image1.width(), image1.width(), image1.format());
+
+    image2 = image3;
 }
 
 void MainWindow::createActions()
