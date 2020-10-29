@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QImage>
 #include <QColorSpace>
 #include <QLabel>
@@ -46,17 +47,18 @@ private:
     QImage image1;
     QImage image2;
     QImage image3;
+
     QLabel *imageLabel1;
     QLabel *imageLabel2;
     QLabel *imageLabel3;
+
     double scaleFactor = 1;
 
+    QVBoxLayout* Vlayout;
     QHBoxLayout* Hlayout;
-    QHBoxLayout* Hlayout2;
-    QWidget* mainWidget;
-    QWidget* mainWidgetFinal;
 
-    QScrollArea *scrollArea;
+    QWidget* mainWidget;
+
 
     QAction *printAct;
     QAction *fitToWindowAct;

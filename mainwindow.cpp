@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowTitle("Transportation Theory");
 
-    Hlayout = new QHBoxLayout(this);
 
     imageLabel1 = new QLabel();
     imageLabel1->setBackgroundRole(QPalette::Base);
@@ -29,12 +28,19 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     mainWidget = new QWidget(this);
+
+    Vlayout = new QVBoxLayout(this);
     Hlayout = new QHBoxLayout(this);
-    mainWidget->setLayout(Hlayout);
+
+
+    mainWidget->setLayout(Vlayout);
 
     Hlayout->addWidget(imageLabel1);
     Hlayout->addWidget(imageLabel2);
-    Hlayout->addWidget(imageLabel3);
+
+    Vlayout->addLayout(Hlayout);
+    Vlayout->addWidget(imageLabel3);
+
 
     setCentralWidget(mainWidget);
 
@@ -51,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     createActions();
 
 
-    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
+    resize(QGuiApplication::primaryScreen()->availableSize());
 }
 
 void MainWindow::setImage(const QImage &newImage)
@@ -131,7 +137,7 @@ void MainWindow::transportation()
     QList<QPair<double, int>> scalarIdx1;
     QList<QPair<double, int>> scalarIdx2;
 
-    const int ITERATIONS = 0;
+    const int ITERATIONS = 4;
 
     for(int k = 0 ; k < ITERATIONS ; ++k)
     {
@@ -163,7 +169,7 @@ void MainWindow::transportation()
 
         for(int i = 0 ; i < scalarIdx1.size() ; ++i)
         {
-            double diff = scalarIdx1[i].first - scalarIdx2[i].first;
+            double diff = scalarIdx2[i].first - scalarIdx1[i].first;
             Point B = A;
             B.normalize(diff);
 
