@@ -110,7 +110,7 @@ void MainWindow::transportation()
 
     uchar* bits1 = image1.bits();
     uchar* bits2 = image2.bits();
-    qDebug() << image1.format() << " - " << image2.format();
+
     QList<Point> im1;
     QList<Point> im2;
 
@@ -131,7 +131,7 @@ void MainWindow::transportation()
     QList<QPair<double, int>> scalarIdx1;
     QList<QPair<double, int>> scalarIdx2;
 
-    const int ITERATIONS = 1;
+    const int ITERATIONS = 0;
 
     for(int k = 0 ; k < ITERATIONS ; ++k)
     {
@@ -142,9 +142,9 @@ void MainWindow::transportation()
         double r3 = distribution(generator);
         double r4 = distribution(generator);
 
-        double x = sqrt(-2 * log(r1) * cos(2 * M_PI * r2));
-        double y = sqrt(-2 * log(r1) * sin(2 * M_PI * r2));
-        double z = sqrt(-2 * log(r3) * cos(2 * M_PI * r4));
+        double x = sqrt(-2.0 * log(r1)) * cos(2.0 * M_PI * r2);
+        double y = sqrt(-2.0 * log(r1)) * sin(2.0 * M_PI * r2);
+        double z = sqrt(-2.0 * log(r3)) * cos(2.0 * M_PI * r4);
 
         Point A(x,y,z);
         A.normalize(1.0);
@@ -174,31 +174,19 @@ void MainWindow::transportation()
         }
     }
 
-    //uchar* bits3 = new uchar(image1.width() * image2.height() * 4);
-    //
-    //for(int i = 0 ; i < image1.width() * image1.height() * 4 ; i += 4)
-    //{
-    //    int idx = i/3;
-    //    bits3[i + 0] = qMax(qMin(255.0, im1[idx].x), 0.0);
-    //    bits3[i + 1] = qMax(qMin(255.0, im1[idx].y), 0.0);
-    //    bits3[i + 2] = qMax(qMin(255.0, im1[idx].z), 0.0);
-    //    bits3[i + 3] = 255.0;
-    //}
-
-
     image3 = QImage(image1.width(), image1.height(), QImage::Format_RGB32);
 
-    for(int i = 0 ; i < image1.width() ; ++i)
+    for(int i = 0 ; i < image1.height() ; ++i)
     {
-        for(int j = 0 ; j < image1.height() ; ++j)
+        for(int j = 0 ; j < image1.width() ; ++j)
         {
-            int idx = (i * image1.width() + j)/3;
+            int idx = (i * image1.height() + j);
 
             double b = qMax(qMin(255.0, im1[idx].x), 0.0);
             double g = qMax(qMin(255.0, im1[idx].y), 0.0);
             double r = qMax(qMin(255.0, im1[idx].z), 0.0);
 
-            image3.setPixel(i, j, qRgb(r, g, b));
+            image3.setPixel(j, i, qRgb(r, g, b));
         }
     }
 
@@ -208,6 +196,9 @@ void MainWindow::transportation()
 
 
     imageLabel3->adjustSize();
+
+    delete bits1;
+    delete bits2;
 
 }
 
