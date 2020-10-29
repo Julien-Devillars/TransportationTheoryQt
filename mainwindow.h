@@ -45,12 +45,18 @@ private:
 
     QImage image1;
     QImage image2;
+    QImage image3;
     QLabel *imageLabel1;
     QLabel *imageLabel2;
+    QLabel *imageLabel3;
     double scaleFactor = 1;
 
     QHBoxLayout* Hlayout;
+    QHBoxLayout* Hlayout2;
     QWidget* mainWidget;
+    QWidget* mainWidgetFinal;
+
+    QScrollArea *scrollArea;
 
     QAction *printAct;
     QAction *fitToWindowAct;

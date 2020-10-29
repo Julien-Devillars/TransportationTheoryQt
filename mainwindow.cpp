@@ -7,20 +7,26 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , imageLabel1(new QLabel)
-    , imageLabel2(new QLabel)
 {
     setWindowTitle("Transportation Theory");
 
     Hlayout = new QHBoxLayout(this);
 
+    imageLabel1 = new QLabel();
     imageLabel1->setBackgroundRole(QPalette::Base);
     imageLabel1->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imageLabel1->setScaledContents(true);
 
+    imageLabel2 = new QLabel();
     imageLabel2->setBackgroundRole(QPalette::Base);
     imageLabel2->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imageLabel2->setScaledContents(true);
+
+    imageLabel3 = new QLabel();
+    imageLabel3->setBackgroundRole(QPalette::Base);
+    imageLabel3->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel3->setScaledContents(true);
+
 
     mainWidget = new QWidget(this);
     Hlayout = new QHBoxLayout(this);
@@ -28,8 +34,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     Hlayout->addWidget(imageLabel1);
     Hlayout->addWidget(imageLabel2);
+    Hlayout->addWidget(imageLabel3);
 
     setCentralWidget(mainWidget);
+
+
+    //scrollArea->setBackgroundRole(QPalette::Dark);
+    //scrollArea->setVisible(false);
+
+    //Hlayout2 = new QHBoxLayout(scrollArea);
+    //mainWidgetFinal->setLayout(Hlayout2);
+
+    //scrollArea->setWidget(mainWidgetFinal);
+
 
     createActions();
 
@@ -93,7 +110,7 @@ void MainWindow::transportation()
 
     uchar* bits1 = image1.bits();
     uchar* bits2 = image2.bits();
-
+    qDebug() << image1.format() << " - " << image2.format();
     QList<Point> im1;
     QList<Point> im2;
 
@@ -114,7 +131,7 @@ void MainWindow::transportation()
     QList<QPair<double, int>> scalarIdx1;
     QList<QPair<double, int>> scalarIdx2;
 
-    const int ITERATIONS = 20;
+    const int ITERATIONS = 1;
 
     for(int k = 0 ; k < ITERATIONS ; ++k)
     {
@@ -157,19 +174,41 @@ void MainWindow::transportation()
         }
     }
 
-    uchar* bits3 = new uchar(image1.width() * image2.height() * 4);
+    //uchar* bits3 = new uchar(image1.width() * image2.height() * 4);
+    //
+    //for(int i = 0 ; i < image1.width() * image1.height() * 4 ; i += 4)
+    //{
+    //    int idx = i/3;
+    //    bits3[i + 0] = qMax(qMin(255.0, im1[idx].x), 0.0);
+    //    bits3[i + 1] = qMax(qMin(255.0, im1[idx].y), 0.0);
+    //    bits3[i + 2] = qMax(qMin(255.0, im1[idx].z), 0.0);
+    //    bits3[i + 3] = 255.0;
+    //}
 
-    for(int i = 0 ; i < image1.width() * image2.height() * 4 ; i += 4)
+
+    image3 = QImage(image1.width(), image1.height(), QImage::Format_RGB32);
+
+    for(int i = 0 ; i < image1.width() ; ++i)
     {
-        bits3[i + 0] = std::max(std::min(255.0, im1[i / 3].x), 0.0);
-        bits3[i + 1] = std::max(std::min(255.0, im1[i / 3].x), 0.0);
-        bits3[i + 2] = std::max(std::min(255.0, im1[i / 3].x), 0.0);
-        bits3[i + 3] = 255.0;
+        for(int j = 0 ; j < image1.height() ; ++j)
+        {
+            int idx = (i * image1.width() + j)/3;
+
+            double b = qMax(qMin(255.0, im1[idx].x), 0.0);
+            double g = qMax(qMin(255.0, im1[idx].y), 0.0);
+            double r = qMax(qMin(255.0, im1[idx].z), 0.0);
+
+            image3.setPixel(i, j, qRgb(r, g, b));
+        }
     }
 
-    QImage image3(bits3, image1.width(), image1.width(), image1.format());
+    if (image3.colorSpace().isValid())
+        image3.convertToColorSpace(QColorSpace::SRgb);
+    imageLabel3->setPixmap(QPixmap::fromImage(image3));
 
-    image2 = image3;
+
+    imageLabel3->adjustSize();
+
 }
 
 void MainWindow::createActions()
