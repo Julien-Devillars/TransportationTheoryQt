@@ -47,15 +47,18 @@ private:
     QImage image1;
     QImage image2;
     QImage image3;
+    QImage image4;
 
     QLabel *imageLabel1;
     QLabel *imageLabel2;
     QLabel *imageLabel3;
+    QLabel *imageLabel4;
 
     double scaleFactor = 1;
 
     QVBoxLayout* Vlayout;
-    QHBoxLayout* Hlayout;
+    QHBoxLayout* Hlayout1;
+    QHBoxLayout* Hlayout2;
 
     QWidget* mainWidget;
 

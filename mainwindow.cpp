@@ -26,33 +26,30 @@ MainWindow::MainWindow(QWidget *parent)
     imageLabel3->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imageLabel3->setScaledContents(true);
 
+    imageLabel4 = new QLabel();
+    imageLabel4->setBackgroundRole(QPalette::Base);
+    imageLabel4->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel4->setScaledContents(true);
 
     mainWidget = new QWidget(this);
 
     Vlayout = new QVBoxLayout(this);
-    Hlayout = new QHBoxLayout(this);
+    Hlayout1 = new QHBoxLayout(this);
+    Hlayout2 = new QHBoxLayout(this);
 
+
+    Hlayout1->addWidget(imageLabel1);
+    Hlayout1->addWidget(imageLabel2);
+
+    Hlayout2->addWidget(imageLabel3);
+    Hlayout2->addWidget(imageLabel4);
+
+    Vlayout->addLayout(Hlayout1);
+    Vlayout->addLayout(Hlayout2);
 
     mainWidget->setLayout(Vlayout);
 
-    Hlayout->addWidget(imageLabel1);
-    Hlayout->addWidget(imageLabel2);
-
-    Vlayout->addLayout(Hlayout);
-    Vlayout->addWidget(imageLabel3);
-
-
     setCentralWidget(mainWidget);
-
-
-    //scrollArea->setBackgroundRole(QPalette::Dark);
-    //scrollArea->setVisible(false);
-
-    //Hlayout2 = new QHBoxLayout(scrollArea);
-    //mainWidgetFinal->setLayout(Hlayout2);
-
-    //scrollArea->setWidget(mainWidgetFinal);
-
 
     createActions();
 
@@ -137,11 +134,13 @@ void MainWindow::transportation()
     QList<QPair<double, int>> scalarIdx1;
     QList<QPair<double, int>> scalarIdx2;
 
-    const int ITERATIONS = 4;
+    const int ITERATIONS = 10;
 
     for(int k = 0 ; k < ITERATIONS ; ++k)
     {
         qDebug() << "K = " << k << "\n";
+
+
 
         double r1 = distribution(generator);
         double r2 = distribution(generator);
@@ -186,7 +185,7 @@ void MainWindow::transportation()
     {
         for(int j = 0 ; j < image1.width() ; ++j)
         {
-            int idx = (i * image1.height() + j);
+            int idx = (i * image1.width() + j);
 
             double b = qMax(qMin(255.0, im1[idx].x), 0.0);
             double g = qMax(qMin(255.0, im1[idx].y), 0.0);
@@ -199,8 +198,6 @@ void MainWindow::transportation()
     if (image3.colorSpace().isValid())
         image3.convertToColorSpace(QColorSpace::SRgb);
     imageLabel3->setPixmap(QPixmap::fromImage(image3));
-
-
     imageLabel3->adjustSize();
 
     delete bits1;
