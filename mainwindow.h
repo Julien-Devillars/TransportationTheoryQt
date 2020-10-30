@@ -18,12 +18,11 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QRandomGenerator>
+#include <QThread>
+#include <QMenuBar>
 
 #include "point.h"
-QT_BEGIN_NAMESPACE
 
-
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -62,6 +61,7 @@ private:
 
     QWidget* mainWidget;
 
+    bool firstTransport = true;
 
     QAction *printAct;
     QAction *fitToWindowAct;

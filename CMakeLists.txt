@@ -30,16 +30,13 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.cpp)
 file(GLOB_RECURSE HEADERS LIST_DIRECTORIES true *.h)
-file(GLOB_RECURSE UI LIST_DIRECTORIES true *.ui)
 
 set(SOURCES ${SOURCES})
 set(HEADERS ${HEADERS})
-set(UI ${UI})
 
 add_executable(TransportationTheory
   ${SOURCES}
   ${HEADERS}
-  ${UI}
 )
 
 target_link_libraries(TransportationTheory PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
 
 #include <QFileDialog>
 
@@ -111,8 +110,20 @@ void MainWindow::open()
 void MainWindow::transportation()
 {
 
-    uchar* bits1 = image1.bits();
-    uchar* bits2 = image2.bits();
+    if(image1.isNull() || image2.isNull())
+    {
+        qDebug() << "Images misses";
+        return;
+    }
+
+    if(image1.width() != image2.width() || image1.height() != image2.height())
+    {
+        qDebug() << "Dimension images not equals";
+        return;
+    }
+
+    uchar* bits1 = firstTransport ? image1.bits() : image2.bits();
+    uchar* bits2 = firstTransport ? image2.bits() : image1.bits();
 
     QList<Point> im1;
     QList<Point> im2;
@@ -120,9 +131,6 @@ void MainWindow::transportation()
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
-
-    if(image1.width() * image1.height() != image2.width() * image2.height())
-        return;
 
     for(int i = 0 ; i < image1.width() * image1.height() * 4; i +=4)
     {
@@ -179,7 +187,7 @@ void MainWindow::transportation()
         }
     }
 
-    image3 = QImage(image1.width(), image1.height(), QImage::Format_RGB32);
+    QImage newImage = QImage(image1.width(), image1.height(), QImage::Format_RGB32);
 
     for(int i = 0 ; i < image1.height() ; ++i)
     {
@@ -191,17 +199,31 @@ void MainWindow::transportation()
             double g = qMax(qMin(255.0, im1[idx].y), 0.0);
             double r = qMax(qMin(255.0, im1[idx].z), 0.0);
 
-            image3.setPixel(j, i, qRgb(r, g, b));
+            newImage.setPixel(j, i, qRgb(r, g, b));
         }
     }
 
-    if (image3.colorSpace().isValid())
-        image3.convertToColorSpace(QColorSpace::SRgb);
-    imageLabel3->setPixmap(QPixmap::fromImage(image3));
-    imageLabel3->adjustSize();
+    if (newImage.colorSpace().isValid())
+        newImage.convertToColorSpace(QColorSpace::SRgb);
 
-    delete bits1;
-    delete bits2;
+    if(firstTransport)
+    {
+        imageLabel3->setPixmap(QPixmap::fromImage(newImage));
+        imageLabel3->adjustSize();
+
+        image3 = newImage;
+        firstTransport = !firstTransport;
+    }
+    else
+    {
+        imageLabel4->setPixmap(QPixmap::fromImage(newImage));
+        imageLabel4->adjustSize();
+
+        image4 = newImage;
+    }
+
+    //delete bits1;
+    //delete bits2;
 
 }
 
@@ -209,13 +231,13 @@ void MainWindow::createActions()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-    QAction *openAct = fileMenu->addAction(tr("&Open"), this, &MainWindow::open);
+    QAction *openAct = fileMenu->addAction(tr("&Open..."), this, &MainWindow::open);
     openAct->setShortcut(QKeySequence::Open); // Enable Ctrl + O shortcut
 
     fileMenu->addSeparator();
     menuBar()->addAction(tr("&Transport"), this, &MainWindow::transportation);
 
-    QAction *exitAct = fileMenu->addAction(tr("E&xit"), this, &QWidget::close);
+    QAction *exitAct = fileMenu->addAction(tr("&Exit"), this, &QWidget::close);
     exitAct->setShortcut(tr("Ctrl+Q"));
 }
 
